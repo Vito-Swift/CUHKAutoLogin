@@ -1,3 +1,5 @@
+#!/usr/bin/python3 
+
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException
@@ -22,7 +24,9 @@ login_url = "https://securelogin.wlan.cuhk.edu.hk/"
 
 
 def login_secure_wlan():
-    browser = webdriver.Firefox(executable_path="/home/vitowu/CLionProjects/pythonProject/geckodriver")
+    op = webdriver.ChromeOptions()
+    op.add_argument('--headless')
+    browser = webdriver.Chrome(executable_path="./chromedriver", options=op)
     browser.get(login_url)
     delay = 10
 
@@ -33,7 +37,7 @@ def login_secure_wlan():
         print("got into the welcome.html page")
     except TimeoutException:
         print("take too much time getting into the welcome page")
-        yield
+        return 
     browser.find_element_by_class_name('checkbox').click()
     browser.find_element_by_id('login').click()
 
@@ -69,7 +73,7 @@ def main():
             if not internet_connected:
                 print("Try login secure wlan...")
                 login_secure_wlan()
-                time.sleep(1)
+                time.sleep(5)
                 continue
 
             print("Transit to inactivate mode, next probe is scheduled in {} seconds...".format(check_interval))
